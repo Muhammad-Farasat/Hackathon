@@ -1,133 +1,164 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Card from '../components/Card';
 import myImage from '../assets/myImage.jpg';
-import Navbar from "../components/Navbar";
 
-// Helper component for animated text
 const Typewriter = ({ text }) => (
-    <div className="flex justify-center">
-        {text.split("").map((char, index) => (
-            <motion.span
-                key={index}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="inline-block"
-            >
-                {char === " " ? "\u00A0" : char}
-            </motion.span>
-        ))}
-    </div>
+  <div className="flex justify-center">
+    {text.split("").map((char, index) => (
+      <motion.span
+        key={index}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.05 }}
+        className="inline-block"
+      >
+        {char}
+      </motion.span>
+    ))}
+  </div>
 );
 
-// SVG Icons for social links
-const GithubIcon = (props) => (
-    <svg {...props} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-    </svg>
-);
-
-const LinkedinIcon = (props) => (
-    <svg {...props} viewBox="0 0 24 24" fill="currentColor" >
-        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-    </svg>
-);
-
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.2,
+      duration: 0.6,
+      ease: 'easeOut'
+    }
+  })
+};
 
 export const Team = () => {
-    // Array now contains 5 team members
-    const teamMembers = [
-        {
-            img: myImage,
-            name: 'Muhammad Saad',
-            desc: 'Passionate software engineer & full-stack developer with expertise in the MERN stack, Next.js, and modern web technologies.',
-            github: 'https://github.com/MuhammadSaadibnMaqsood',
-            linkedin: 'https://www.linkedin.com/in/muhammad-saad-198567355/',
-        },
-        {
-            img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop",
-            name: 'John Doe',
-            desc: 'Creative front-end developer specializing in React and animations to build beautiful, intuitive user interfaces.',
-            github: 'https://github.com',
-            linkedin: 'https://linkedin.com',
-        },
-        {
-            img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1887&auto=format&fit=crop",
-            name: 'Jane Smith',
-            desc: 'Pragmatic back-end engineer focused on building scalable and resilient systems with Node.js and cloud infrastructure.',
-            github: 'https://github.com',
-            linkedin: 'https://linkedin.com',
-        },
-        {
-            img: "https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=2071&auto=format&fit=crop",
-            name: 'Alex Johnson',
-            desc: 'A DevOps enthusiast who ensures our applications run smoothly and reliably, from code commit to production deployment.',
-            github: 'https://github.com',
-            linkedin: 'https://linkedin.com',
-        },
-        {
-            img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",
-            name: 'Emily White',
-            desc: 'Specializes in UI/UX design, transforming complex problems into elegant, user-friendly digital experiences.',
-            github: 'https://github.com',
-            linkedin: 'https://linkedin.com',
-        },
-    ];
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    return (
-        <section className="relative flex flex-col items-center font-poppins bg-black text-white pb-16 pt-8 bg-[url(https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/bg-gradient-3.svg)] bg-center bg-cover min-h-screen">
-            <Navbar />
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
-            <div className="text-center my-28">
-                <h1 className="text-4xl flex gap-x-3 sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-600 to-gray-600 tracking-tight">
-                    <Typewriter text="MEET" />
-                    <Typewriter text="THE" />
-                    <Typewriter text="TEAM" />
-                </h1>
-                <div className="mt-4 h-1 w-32 mx-auto bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"></div>
+  const closeNavbar = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const teamMembers = [
+    {
+      img: myImage,
+      name: 'Muhammad Saad',
+      desc: 'Passionate software engineer/ full stack developer with expertise in HTML, CSS, Js, React.js, tailwind, Node.js, Express.js',
+    },
+    {
+      img: "https://images.unsplash.com/photo-1747134392471-831ea9a48e1e?q=80&w=2000&auto=format&fit=crop",
+      name: 'Muhammad Saad',
+      desc: 'Passionate software engineer/ full stack developer with expertise in HTML, CSS, Js, React.js, tailwind, Node.js, Express.js',
+    },
+    {
+      img: "https://images.unsplash.com/photo-1747134392471-831ea9a48e1e?q=80&w=2000&auto=format&fit=crop",
+      name: 'Muhammad Saad',
+      desc: 'Passionate software engineer with expertise in MERN',
+    },
+    {
+      img: "https://images.unsplash.com/photo-1747134392471-831ea9a48e1e?q=80&w=2000&auto=format&fit=crop",
+      name: 'Muhammad Saad',
+      desc: 'Passionate software engineer with expertise in MERN',
+    },
+    {
+      img: "https://images.unsplash.com/photo-1747134392471-831ea9a48e1e?q=80&w=2000&auto=format&fit=crop",
+      name: 'Muhammad Saad',
+      desc: 'Passionate software engineer with expertise in MERN',
+    },
+  ];
+
+  return (
+    <>
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="relative flex flex-col items-center font-poppins bg-black text-white pb-16 pt-8 bg-[url(https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/bg-gradient-3.svg)] bg-center bg-cover min-h-screen"
+      >
+
+        <nav className="flex items-center justify-center border mx-4 max-md:w-full max-md:justify-between border-slate-700 px-6 py-4 rounded-full text-white text-sm">
+          <NavLink to="/">
+            <div className="flex gap-2 items-center justify-center">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="4.706" cy="16" r="4.706" fill="#D9D9D9" />
+                <circle cx="16.001" cy="4.706" r="4.706" fill="#D9D9D9" />
+                <circle cx="16.001" cy="27.294" r="4.706" fill="#D9D9D9" />
+                <circle cx="27.294" cy="16" r="4.706" fill="#D9D9D9" />
+              </svg>
+              <h1 className="text-3xl hover:cursor-pointer md:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gray-400 via-gray-200 to-white animate-pulse">
+                Capra
+              </h1>
             </div>
+          </NavLink>
 
-            {/* Zig-Zag Team Section */}
-            <div className="container px-16 mt-12 space-y-24">
-                {teamMembers.map((member, index) => (
-                    <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className={`flex flex-col md:flex-row items-center gap-8 md:gap-12 ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
-                    >
-                        {/* Image */}
-                        <div className="w-full md:w-5/12 lg:w-4/12">
-                            <img
-                                src={member.img}
-                                alt={`Portrait of ${member.name}`}
-                                className="w-full h-auto rounded-lg shadow-2xl shadow-purple-900/40 object-cover aspect-square"
-                            />
-                        </div>
+          <div className="hidden md:flex items-center mt-3 gap-6 ml-7">
+            {['Home', 'Team'].map((item) => (
+              <NavLink key={item} to={item.toLowerCase() === 'home' ? '/' : `/${item.toLowerCase()}`}
+                className="relative overflow-hidden h-6 group">
+                <span className="block group-hover:-translate-y-full transition-transform duration-300">{item}</span>
+                <span className="block absolute top-full left-0 group-hover:translate-y-[-100%] transition-transform duration-300">{item}</span>
+              </NavLink>
+            ))}
+          </div>
 
-                        {/* Description */}
-                        <div className="w-full md:w-7/12 lg:w-6/12 text-center md:text-left">
-                            <h3 className="text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-white">
-                                {member.name}
-                            </h3>
-                            <p className="mt-4 text-lg text-gray-300">
-                                {member.desc}
-                            </p>
-                            <div className="mt-6 flex justify-center md:justify-start space-x-4">
-                                <a href={member.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors duration-300">
-                                    <GithubIcon className="h-8 w-8" />
-                                </a>
-                                <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors duration-300">
-                                    <LinkedinIcon className="h-8 w-8" />
-                                </a>
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
+          <div className="hidden ml-14 md:flex items-center gap-4">
+            <NavLink to='/demo' className="bg-white hover:cursor-pointer hover:shadow-[0px_0px_30px_14px] shadow-[0px_0px_30px_7px] hover:shadow-white/50 shadow-white/50 text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-100 transition duration-300">
+              DEMO
+            </NavLink>
+          </div>
+
+          <button onClick={toggleMobileMenu} className="md:hidden text-gray-400">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          {isMobileMenuOpen && (
+            <div className="absolute top-0 text-base left-0 bg-black w-full h-full flex-col items-center justify-center gap-4 flex">
+              <NavLink to="/" onClick={closeNavbar} className="hover:text-indigo-600">Home</NavLink>
+              <NavLink to="/team" onClick={closeNavbar} className="hover:text-indigo-600">Team</NavLink>
+              <NavLink to="/demo" onClick={closeNavbar}>
+                <button className="bg-white hover:shadow-[0px_0px_30px_14px] shadow-[0px_0px_30px_7px] hover:shadow-white/50 shadow-white/50 text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-100 transition duration-300">
+                  DEMO
+                </button>
+              </NavLink>
             </div>
-        </section>
-    );
-};
+          )}
+        </nav>
+
+        <div className="text-center my-12">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-600 to-gray-600 tracking-tight">
+            <Typewriter text="TEAM MEMBERS" />
+          </h1>
+          <div className="mt-3 h-1 w-24 mx-auto bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 rounded-full"></div>
+        </div>
+
+        <div className='mt-10 flex flex-wrap justify-center gap-14 px-4'>
+          {teamMembers.map((data, i) => (
+            <motion.div
+              key={i}
+              custom={i}
+              initial="hidden"
+              animate="visible"
+              variants={cardVariants}
+            >
+              <Card
+                img={data.img}
+                name={data.name}
+                desc={data.desc}
+                github={'https://github.com/MuhammadSaadibnMaqsood'}
+                lindin={'https://www.linkedin.com/in/muhammad-saad-198567355/'}
+                twiiter={''}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+    </>
+  );
+}
